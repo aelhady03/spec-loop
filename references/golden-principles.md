@@ -5,12 +5,11 @@ loop (Phases 6-7) — it doesn't wait for a new story to arrive. Its job is to
 stop entropy from compounding, because agents will faithfully replicate
 whatever patterns already exist in the repo, including the bad ones.
 
-Source: OpenAI's Codex team found manual cleanup didn't scale ("we used to
-spend every Friday — 20% of the week — cleaning up AI slop") and replaced it
-with mechanical, continuous enforcement
-(["Harness engineering," 2026-02-11](https://openai.com/index/harness-engineering/)).
-Treat technical debt like a high-interest loan: pay it down continuously in
-small increments, not in painful periodic bursts.
+Teams running fully agent-generated codebases at scale have found manual
+cleanup doesn't work ("we used to spend every Friday — 20% of the week —
+cleaning up AI slop") and replaced it with mechanical, continuous
+enforcement instead. Treat technical debt like a high-interest loan: pay it
+down continuously in small increments, not in painful periodic bursts.
 
 ## Golden principles doc
 

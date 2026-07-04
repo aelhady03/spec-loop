@@ -51,6 +51,25 @@ Each task in tasks.md maps to exactly one PR, stacked on the previous task's
 branch when there's a real dependency, or opened independently when there
 isn't (prefer independence — it parallelizes review).
 
+## Conflicts between parallel tasks, and rebasing stacked branches
+Independent tasks dispatched in parallel (Phase 6) can still collide if they
+touch the same file. When that happens:
+- **Don't let an agent auto-resolve a real semantic conflict** (both tasks
+  changed the same logic differently) — that's exactly the kind of judgment
+  call that should escalate to a human rather than get silently merged one
+  way.
+- **Do let an agent rebase mechanically** when the conflict is purely
+  positional (both diffs are compatible, git just can't tell) — re-run that
+  task's tests after the rebase before re-requesting review; a rebase
+  invalidates prior review the same as a new commit would.
+- For a stacked branch (`agent/<ticket>-T2` on top of `agent/<ticket>-T1`):
+  if T1's PR changes shape after review (not just gets merged as-is), rebase
+  T2 onto the updated T1 and treat T2's prior review as stale — re-run its
+  build-loop verification, don't just assume it still applies.
+- If the same file keeps causing conflicts across tasks, that's a signal
+  the tasks weren't actually independent slices — revisit tasks.md's
+  splitting rather than repeatedly rebasing around it.
+
 ## Merge gate
 At spec-loop's default autonomy (L3, see autonomy-levels.md), a PR does not
 merge until:

@@ -1,8 +1,9 @@
 ---
 name: spec-loop
 description: Turns a raw user story into shipped, reviewed code through a bounded loop — grill it for gaps, write a spec, plan it, split it into small PR-sized tasks with tests-first, implement autonomously, and adversarially review before merge. Use when a user hands you a feature request, ticket, or user story and no spec/plan exists yet, or when they ask to "plan this properly," "spec this out," or want autonomous implementation with review gates instead of ad-hoc prompting.
-when_to_use: Trigger on a new feature/story/ticket with no existing spec, on "spec this out" / "plan this" / "grill this story" requests, or when the user wants an autonomous build+review loop rather than turn-by-turn prompting. Do not trigger on trivial one-line fixes, pure Q&A, or when a spec already exists and the user just wants to continue an in-flight task.
-allowed-tools: Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion, TaskCreate, TaskUpdate, Agent, Workflow
+when_to_use: Trigger on a new feature/story/ticket with no existing spec, on "spec this out" / "plan this" / "grill this story" requests, or when the user wants an autonomous build+review loop rather than turn-by-turn prompting. Also trigger when a user wants to extend/amend an existing spec-loop spec (see Phase 0's brownfield note). Do not trigger on trivial one-line fixes or pure Q&A.
+allowed-tools: Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion, Agent, Workflow
+version: 0.3.0
 ---
 
 # spec-loop
@@ -50,8 +51,26 @@ not hand-holding each step. Concretely that means:
 ## Phase 0 — Intake
 
 Capture the raw story verbatim. Do not paraphrase or "clean it up" yet — that
-happens in Phase 2. If there's no ticket id, mint a short slug from the
-title.
+happens in Phase 2.
+
+**Ticket id.** If there's a real ticket (Jira, Linear, GitHub issue), use its
+id. If there isn't one, don't reuse the slug as the id — mint a
+`YYYY-MM-DD-<n>` id (e.g. `2026-07-04-1`) so `<ticket-id>-<slug>` doesn't
+collapse into a duplicated string. Both `<ticket-id>` and `<slug>` must be
+`[A-Za-z0-9_-]` only (kebab-case, no spaces/slashes) — `scripts/scaffold.sh`
+enforces this and will refuse anything else, since these values become path
+segments.
+
+**Brownfield: extending an existing spec.** If `docs/product-specs/` already
+has a spec that this story extends or amends rather than a clean new
+feature, don't start a parallel/competing spec. Read the existing
+`spec.md` and its `exec-plans/active/` (or `completed/`) plan/tasks first,
+run Phase 1's grilling against *the delta only* (what's changing, not the
+whole feature again), then update the existing spec.md in place — add a
+new dated entry under a `## Amendments` section (append one if it doesn't
+exist yet) rather than rewriting history — and add new tasks to the
+existing tasks.md rather than minting a second ticket-id for the same
+feature.
 
 ## Phase 1 — Grill (find the gaps)
 
@@ -119,7 +138,10 @@ green) → self-check the task's acceptance criteria → stop. Cap at ~3
 attempts per task before escalating to the human rather than silently
 retrying. If you have access to background/forked subagents, dispatch
 independent tasks in parallel rather than serially — they're independent
-slices by construction from Phase 4.
+slices by construction from Phase 4. If two parallel tasks turn out to
+conflict anyway (touch the same file in incompatible ways), don't let an
+agent silently resolve the merge — see the conflict-handling note in
+`references/pr-conventions.md`.
 
 When the task has a runtime surface (UI, API, service), don't stop at green
 tests — actually drive it if the environment allows: boot an isolated
@@ -169,10 +191,12 @@ instead of silently picking a side. Skip this phase for a first-time
 spec-loop run in a new repo; start it once there's enough agent-generated
 code that drift is a real risk.
 
-## Enhanced mode (when Agent/Workflow tools are available)
+## Enhanced mode (when subagent/orchestration tooling is available)
 
-Everything above works with a single sequential agent. If your environment
-exposes subagent dispatch or multi-agent orchestration, prefer it for:
+Everything above works with a single sequential agent — that's the fallback
+every environment can run. If your environment exposes subagent dispatch or
+multi-agent orchestration (in Claude Code, the Agent and Workflow tools),
+prefer it for:
 - Phase 3's judge panel (parallel candidate plans, independent scoring)
 - Phase 6 (parallel task implementation across independent slices)
 - Phase 7 (parallel review lenses + parallel adversarial verification of

@@ -7,8 +7,24 @@ set -euo pipefail
 
 TICKET="${1:?usage: scaffold.sh <ticket-id> <slug> [target-repo-root]}"
 SLUG="${2:?usage: scaffold.sh <ticket-id> <slug> [target-repo-root]}"
-TARGET_ROOT="${3:-.}"
 SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+SAFE='^[A-Za-z0-9_-]+$'
+if [[ ! "$TICKET" =~ $SAFE ]]; then
+  echo "error: ticket-id '$TICKET' must match $SAFE (letters, digits, - and _ only)." >&2
+  echo "No existing ticketing system? Use a date-based id, e.g. 2026-07-04-1." >&2
+  exit 1
+fi
+if [[ ! "$SLUG" =~ $SAFE ]]; then
+  echo "error: slug '$SLUG' must match $SAFE (letters, digits, - and _ only, kebab-case, no spaces)." >&2
+  exit 1
+fi
+
+if [ -n "${3:-}" ]; then
+  TARGET_ROOT="$3"
+else
+  TARGET_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || echo .)"
+fi
 
 # --- 1. knowledge-base skeleton (created once, left alone after that) ---
 

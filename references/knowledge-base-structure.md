@@ -1,10 +1,8 @@
 # Knowledge-base structure: AGENTS.md as a map, not a manual
 
-Source pattern: OpenAI, ["Harness engineering: leveraging Codex in an
-agent-first world"](https://openai.com/index/harness-engineering/)
-(2026-02-11). Their team tried one giant `AGENTS.md` and it failed in
-predictable, specific ways — this is why spec-loop doesn't scaffold a single
-instructions file:
+Teams running fully agent-generated codebases at scale have tried one giant
+`AGENTS.md` and found it fails in predictable, specific ways — this is why
+spec-loop doesn't scaffold a single instructions file:
 
 - **Context is scarce.** A giant instruction file crowds out the task, the
   code, and the relevant docs — the agent either misses key constraints or

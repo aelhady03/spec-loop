@@ -6,8 +6,8 @@ moving that default up or down deliberately, instead of drifting there by
 accident.
 
 Levels (adapted from the "Five Levels of AI Coding Agent Autonomy" framing
-that emerged in 2026, and consistent with what OpenAI's Codex team describes
-reaching in ["Harness engineering"](https://openai.com/index/harness-engineering/)):
+that emerged in 2026, and consistent with what teams running fully
+agent-generated codebases at scale describe reaching in practice):
 
 - **L1 — Assistive.** Agent suggests, human writes/applies every change.
 - **L2 — Conversational.** Continuous human steering, turn by turn.

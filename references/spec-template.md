@@ -35,3 +35,10 @@ What's most likely to go wrong, and the blast radius if it does.
 
 ## Non-functional requirements
 Latency / auth / privacy / compat constraints, if any.
+
+## Amendments
+Only add this section once this spec is amended after initial approval
+(brownfield case — see SKILL.md Phase 0). Append, don't rewrite history:
+
+| Date | What changed | Why | New/changed acceptance criteria |
+|---|---|---|---|
