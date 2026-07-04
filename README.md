@@ -66,7 +66,7 @@ next agent run instead of rotting after the first one.
 ### Install
 
 ```bash
-npx skills add <owner>/spec-loop
+npx skills add aelhady03/spec-loop
 ```
 
 Or clone this repo and point your agent's skill-discovery path at it, per
