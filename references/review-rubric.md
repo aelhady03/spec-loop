@@ -38,3 +38,20 @@ If the builder fixes and re-submits, re-review only the changed hunks plus
 anything a fix could have broken — not the whole diff from scratch. Cap at
 ~2 fix/re-check rounds; a third round of the same blocking finding means
 escalate to the human rather than keep looping.
+
+## Multiple independent reviewers (this is a Ralph Wiggum Loop)
+Don't rely on a single review pass. Have the builder request review from
+more than one independent reviewer — locally and, if available,
+cloud/async — and keep iterating until **all** reviewer agents are
+satisfied, not just the first one. This is the same shape as what's
+elsewhere called a [Ralph Wiggum
+loop](https://ghuntley.com/ralph/): the same review prompt re-run each
+iteration against the current diff, with state (the findings, what's been
+fixed) persisted on disk in the PR/tasks.md rather than only in a
+conversation. The bounded-iteration cap above still applies per reviewer.
+
+At L3 autonomy (spec-loop's default, see autonomy-levels.md) a human still
+makes the final call once reviewer agents are satisfied. At L4, "all
+reviewer agents satisfied" is itself the merge gate, and the human is
+notified rather than blocking — see the merge-gate note in
+pr-conventions.md before turning that dial.

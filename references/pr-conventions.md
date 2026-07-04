@@ -30,12 +30,14 @@ commits.
 
 ## PR description
 Do not re-explain the design. Link instead:
-- Spec: `docs/specs/<ticket-id>/spec.md`
-- Plan: `docs/specs/<ticket-id>/plan.md`
+- Spec: `docs/product-specs/<ticket-id>-<slug>.md`
+- Plan: `docs/exec-plans/active/<ticket-id>-<slug>/plan.md`
 - This task's row in `tasks.md`
 - What changed (bullet list, not prose)
 - Test evidence (which tests are new/red→green, coverage of the acceptance
-  criteria this task closes)
+  criteria this task closes) — plus runtime verification evidence
+  (screenshot/recording/log-query result) per test-plan.md's Runtime
+  Verification section, when there's a runtime surface to drive.
 
 ## Diff-size gate
 Default ceiling: **~400 changed lines** (excluding generated/lockfiles).
@@ -50,10 +52,31 @@ branch when there's a real dependency, or opened independently when there
 isn't (prefer independence — it parallelizes review).
 
 ## Merge gate
-A PR does not merge until:
+At spec-loop's default autonomy (L3, see autonomy-levels.md), a PR does not
+merge until:
 1. All tests for this task are green.
 2. The adversarial review loop (see review-rubric.md) reports zero blocking
    findings, or every blocking finding has an explicit human override.
-3. A human has looked at it — spec-loop's autonomy stops at implementation +
-   review; merge itself is always a human (or human-delegated bot merge)
-   action, never a fully autonomous step.
+3. A human has looked at it — merge itself is a human (or human-delegated
+   bot merge) action.
+
+At L4, step 3 relaxes: merge can happen once every independent reviewer
+agent is satisfied, with the human notified async rather than blocking.
+Don't relax this because throughput demands it before the L4 prerequisites
+in autonomy-levels.md are actually met — relaxing the merge gate ahead of
+the mechanical guardrails that justify it is how "AI slop" compounds.
+
+## Mechanical enforcement over prose review
+Where a rule is checkable (naming, layering, structured logging, forbidden
+patterns), write a linter or structural test for it instead of relying on a
+reviewer to remember to mention it — see golden-principles.md. Write the
+lint's failure message to include the fix, not just the violation, e.g.
+`error: raw fetch() at a domain boundary — use the validated client in
+lib/http-client instead`, so a builder agent can self-correct without a
+review round-trip.
+
+## Test flakes at higher throughput
+At L3, a flaky test blocks merge like any other red test. At L4, once
+flake-quarantine tooling exists, a single rerun is acceptable before
+treating a flake as a real failure — corrections are cheap and waiting is
+expensive once the harness is mature enough to make that trade safely.

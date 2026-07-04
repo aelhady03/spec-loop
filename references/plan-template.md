@@ -1,6 +1,8 @@
 # Plan: {{ticket-id}} — {{title}}
 
-Spec: ./spec.md
+Spec: docs/product-specs/{{ticket-id}}-{{slug}}.md
+Lives at: docs/exec-plans/active/{{ticket-id}}-{{slug}}/plan.md (moves to
+exec-plans/completed/ once the last task merges)
 
 ## Approach
 The chosen design, in prose. What it touches, what it doesn't.
